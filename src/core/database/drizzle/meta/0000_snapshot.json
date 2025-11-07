@@ -1,0 +1,230 @@
+{
+  "id": "7b5f567a-cb62-46e2-9ad5-2ea82ef2f120",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.information_gather": {
+      "name": "information_gather",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(128)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "blood_type": {
+          "name": "blood_type",
+          "type": "blood_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gender": {
+          "name": "gender",
+          "type": "gender",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "age": {
+          "name": "age",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "weight": {
+          "name": "weight",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "height": {
+          "name": "height",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "country": {
+          "name": "country",
+          "type": "varchar(128)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "diet": {
+          "name": "diet",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "food_allergies": {
+          "name": "food_allergies",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "food_dislikes": {
+          "name": "food_dislikes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "calorie_intake": {
+          "name": "calorie_intake",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "information_gather_user_id_users_id_fk": {
+          "name": "information_gather_user_id_users_id_fk",
+          "tableFrom": "information_gather",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(128)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "first_name": {
+          "name": "first_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "last_name": {
+          "name": "last_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "contact_name": {
+          "name": "contact_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "password": {
+          "name": "password",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "otp": {
+          "name": "otp",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "verification_token": {
+          "name": "verification_token",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "password_resent_token": {
+          "name": "password_resent_token",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "googleProvider": {
+          "name": "googleProvider",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "facebookProvider": {
+          "name": "facebookProvider",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "users_email_unique": {
+          "name": "users_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.blood_type": {
+      "name": "blood_type",
+      "schema": "public",
+      "values": [
+        "A+",
+        "A-",
+        "B+",
+        "B-",
+        "AB+",
+        "AB-",
+        "O+",
+        "O-"
+      ]
+    },
+    "public.gender": {
+      "name": "gender",
+      "schema": "public",
+      "values": [
+        "MALE",
+        "FEMALE"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

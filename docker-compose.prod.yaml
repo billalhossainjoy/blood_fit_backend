@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      dockerfile: Dockerfile_prod
+      target: production
+    restart: unless-stopped
+    ports:
+      - "${PORT}:${PORT}"
+    env_file:
+      - .env.production
+    environment:
+      DATABASE_URL: "postgresql://root:password@db:5432/BloodFit"
+    depends_on:
+      - db
+    networks:
+      - BloodFit-network-prod
+    command: node dist/src/main.js
+
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    ports:
+      - "3051:5432"
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: BloodFit
+    volumes:
+      - db_data:/var/common/postgresql/data
+    networks:
+      - BloodFit-network-prod
+
+  cloudflared:
+    image: cloudflare/cloudflared  # https://blood-api.billal.space/
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TOKEN}
+    networks:
+      - BloodFit-network-prod
+    restart: unless-stopped
+
+volumes:
+  db_data:
+
+networks:
+  BloodFit-network-prod:

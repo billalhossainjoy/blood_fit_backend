@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      target: development
+    restart: unless-stopped
+    ports:
+      - "${PORT}:${PORT}"
+    env_file:
+      - .env.development
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: "postgresql://root:password@postgres:5432/BloodFit"
+      CHOKIDAR_USEPOLLING: "true"
+    depends_on:
+      - postgres
+    networks:
+      - BloodFit-network
+    command: pnpm run dev
+
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    ports:
+      - "6001:5432"
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: BloodFit
+    volumes:
+      - pg_data:/var/common/postgresql/data
+    networks:
+      - BloodFit-network
+
+volumes:
+  pg_data:
+
+networks:
+  BloodFit-network:
+

@@ -1,0 +1,26 @@
+FROM node:20-alpine as builder
+
+RUN corepack enable
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+RUN pnpm install
+
+COPY . .
+
+RUN npm run build
+
+FROM node:20-alpine as production
+
+RUN corepack enable
+
+COPY --from=builder /usr/src/app/package*.json ./
+COPY --from=builder /usr/src/app/dist ./dist
+
+RUN pnpm install --prod
+
+EXPOSE ${PORT}
+
+CMD ["node", "dist/src/main"]

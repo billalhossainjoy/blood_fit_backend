@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Verification Required</title>
+    <!-- Critical for email client compatibility: Use a small <style> block for media queries -->
+    <style>
+        @media only screen and (max-width: 600px) {
+            .container {
+                width: 100% !important;
+            }
+            .content-area {
+                padding: 20px !important;
+            }
+            .button {
+                display: block !important;
+                width: 100% !important;
+            }
+        }
+    </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f4f4; font-family: Arial, sans-serif; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;">
+
+<!-- Outer table for background and centering -->
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;">
+    <tr>
+        <td align="center" style="padding: 30px 0;">
+
+            <!-- Main Content Container (600px wide) -->
+            <table border="0" cellpadding="0" cellspacing="0" width="600" class="container" style="background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow: hidden;">
+
+                <!-- Header Section -->
+                <tr>
+                    <td align="center" style="padding: 20px 0; background-color: #10b981; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                        <h1 style="margin: 0; font-size: 24px; color: #ffffff;">inRagZ</h1>
+                        <!-- You could replace this with an image logo -->
+                    </td>
+                </tr>
+
+                <!-- Body Content -->
+                <tr>
+                    <td class="content-area" style="padding: 40px; color: #333333;">
+
+                        <h2 style="font-size: 24px; color: #1f2937; margin-top: 0; margin-bottom: 20px;">Welcome to the Family!</h2>
+
+                        <p style="margin-bottom: 20px; font-size: 16px; line-height: 1.6;">
+                            Hello **<%= name %>**,
+                        </p>
+
+                        <p style="margin-bottom: 25px; font-size: 16px; line-height: 1.6;">
+                            Thank you for registering! We just need to quickly verify your email address to secure your account and grant you full access to all our features.
+                        </p>
+
+                        <!-- Key Call to Action (CTA) Section -->
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin: 30px 0;">
+                            <tr>
+                                <td align="center" style="padding: 10px;">
+
+                                    <!-- Verification Button -->
+                                    <table border="0" cellpadding="0" cellspacing="0">
+                                        <tr>
+                                            <td align="center" style="border-radius: 8px; background-color: #059669; padding: 12px 25px;">
+                                                <a href="<%= url %>" target="_blank" class="button"
+                                                   style="font-size: 18px; font-weight: bold; color: #ffffff; text-decoration: none; display: inline-block;">
+                                                    Verify My Account
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </td>
+                            </tr>
+                        </table>
+
+                        <p style="margin-top: 25px; margin-bottom: 20px; font-size: 16px; line-height: 1.6; text-align: center; color: #6b7280;">
+                            This link will expire in 24 hours.
+                        </p>
+
+                        <p style="margin-bottom: 20px; font-size: 16px; line-height: 1.6;">
+                            If the button above doesn't work, you can copy and paste the following link into your web browser:
+                        </p>
+
+                        <!-- Verification Link Fallback -->
+                        <p style="word-break: break-all; font-size: 14px; color: #3b82f6; background-color: #eff6ff; padding: 10px; border-radius: 4px;">
+                            <%= url %>
+                        </p>
+
+                        <p style="margin-top: 30px; font-size: 16px; line-height: 1.6;">
+                            See you inside!
+                        </p>
+                        <p style="margin: 0; font-size: 16px; line-height: 1.6;">
+                            The **[Your App Name]** Team
+                        </p>
+
+                    </td>
+                </tr>
+
+                <!-- Footer Section -->
+                <tr>
+                    <td align="center" style="padding: 30px 40px; background-color: #e5e7eb; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">
+                        <p style="margin: 0; font-size: 12px; color: #6b7280; line-height: 1.5;">
+                            You are receiving this email because you recently signed up for an account. If you did not sign up, please ignore this email.
+                        </p>
+                        <!-- Optional: Use EJS to dynamically insert the current year -->
+                        <p style="margin: 15px 0 0 0; font-size: 10px; color: #9ca3af;">
+                            &copy; <%= new Date().getFullYear() %> inRagZ. All rights reserved.
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
