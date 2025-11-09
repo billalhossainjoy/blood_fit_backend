@@ -20,6 +20,13 @@ export const ConfigValidateEnv = Joi.object({
 
     return num;
   }),
+
+  JWT_ACCESS_TOKEN_SECRET: Joi.string().required(),
+  JWT_ACCESS_TOKEN_EXPIRES: Joi.string().required(),
+  JWT_REFRESH_TOKEN_EXPIRES: Joi.string().required(),
+  ISSUER: Joi.string().required(),
+  AUDIENCE: Joi.string().required(),
+
   API_URL: Joi.string().required(),
   API_DOCUMENTATION: Joi.string().required(),
   DATABASE_URL: Joi.string().required(),

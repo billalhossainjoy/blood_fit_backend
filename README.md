@@ -34,8 +34,7 @@
 ## Compile and run dev server
 
 ```bash
- development
-docker compose --env-file=.env.development up --build -d
+ docker compose --env-file=.env.development up --build -d
 
 ```
 
@@ -43,7 +42,6 @@ docker compose --env-file=.env.development up --build -d
 
 
 ```bash
- production
  docker compose -f docker-compose.prod.yaml --env-file=.env.production up --build -d
 
 ```

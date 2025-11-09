@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -8,10 +9,19 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
-    .setTitle('InRagZ')
-    .setDescription('The InRagZ API description')
+    .setTitle('Blood Fit')
+    .setDescription('The blood-fit API description')
     .setVersion('1.0')
-    .addBearerAuth()
+    .addBearerAuth(
+      {
+        bearerFormat: 'JWT',
+        scheme: 'bearer',
+        type: 'http',
+        name: 'authorization',
+        in: 'header',
+      },
+      'jwt',
+    )
     .build();
 
   const apiDoc = SwaggerModule.createDocument(app, config);
@@ -21,6 +31,13 @@ async function bootstrap() {
       persistAuthorization: true,
     },
   });
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+    }),
+  );
 
   await app.listen(process.env.PORT!);
 }

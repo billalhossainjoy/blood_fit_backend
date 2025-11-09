@@ -10,9 +10,13 @@ RUN pnpm install
 
 COPY . .
 
-RUN npm run build
+RUN pnpm db:push
+
+RUN pnpm run build
 
 FROM node:20-alpine as production
+
+WORKDIR /usr/src/app
 
 RUN corepack enable
 
