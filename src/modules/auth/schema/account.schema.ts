@@ -7,7 +7,6 @@ export const AccountTable = pgTable('account', {
   id: varchar({ length: 128 })
     .primaryKey()
     .$defaultFn(() => createId()),
-  email: varchar({ length: 255 }).notNull().unique(),
   password: varchar({ length: 255 }),
   otp: varchar({ length: 255 }),
   accessToken: text(),
@@ -30,3 +29,5 @@ export const AccountRelation = relations(AccountTable, ({ one }) => ({
     references: [UserTable.id],
   }),
 }));
+
+export type Account = typeof AccountTable.$inferSelect;

@@ -6,13 +6,24 @@ import { DatabaseService } from '../../core/database/database.service';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import authConfig from './config/auth.config';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './guards/auth.guard';
 
 @Module({
   imports: [
     ConfigModule.forFeature(authConfig),
     JwtModule.registerAsync(authConfig.asProvider()),
   ],
-  providers: [AuthService, UserService, DatabaseService, JwtService],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+    AuthService,
+    UserService,
+    DatabaseService,
+    JwtService,
+  ],
   controllers: [AuthController],
 })
 export class AuthModule {}

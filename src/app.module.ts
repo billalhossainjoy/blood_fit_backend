@@ -8,12 +8,12 @@ import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
+    AuthModule,
     UploadModule,
     MailModule,
     ConfigModule,
     UserModule,
     DatabaseModule,
-    AuthModule,
   ],
 })
 export class AppModule {}
