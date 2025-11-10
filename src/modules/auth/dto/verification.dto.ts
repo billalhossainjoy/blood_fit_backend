@@ -1,15 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumberString, IsString, Length } from 'class-validator';
 
-export class OtpValidationRequestDto {
-  @ApiProperty()
+export class OtpVerificationRequestDto {
+  @ApiProperty({
+    example: '123456',
+  })
   @IsNotEmpty()
   @IsNumberString()
   @Length(6, 6)
-  otp: number;
+  otp: string;
 }
 
-export class TokenValidationRequestDto {
+export class TokenVerificationRequestDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()

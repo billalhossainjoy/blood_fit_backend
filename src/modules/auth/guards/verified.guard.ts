@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
-import { type Request } from 'express';
+import { Request } from 'express';
 
 @Injectable()
 export class RoleGuard implements CanActivate {
@@ -15,20 +15,10 @@ export class RoleGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const requiredRoles = this.reflector.getAllAndOverride<string[]>('roles', [
-      context.getHandler(),
-      context.getClass(),
-    ]);
-
     const request = context.switchToHttp().getRequest<Request>();
 
-    if (
-      requiredRoles &&
-      requiredRoles.length > 0 &&
-      request.user &&
-      !requiredRoles.includes(request.user.role)
-    ) {
-      throw new UnauthorizedException();
+    if (request.account && !request.account.isVerified) {
+      throw new UnauthorizedException('user is not verified');
     }
 
     return true;

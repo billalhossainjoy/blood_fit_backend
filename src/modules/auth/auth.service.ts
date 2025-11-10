@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Inject,
   Injectable,
@@ -6,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { DatabaseService } from '../../core/database/database.service';
 import { Account, AccountTable } from './schema/account.schema';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, gt } from 'drizzle-orm';
 import { SignupRequestDto } from './dto/signup.dto';
 import { hash, verify } from 'argon2';
 import { User, UserTable } from '../user/schema/user.schema';
@@ -16,6 +17,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService, type ConfigType } from '@nestjs/config';
 import authConfig from './config/auth.config';
 import { createId } from '@paralleldrive/cuid2';
+import { generateOtp, generateToken } from '../../core/lib/utils';
 
 @Injectable()
 export class AuthService {
@@ -40,6 +42,8 @@ export class AuthService {
 
     const hashedPassword = await hash(password);
     const accountId = createId();
+    const otp = generateOtp();
+    const token = generateToken();
 
     return await this.databaseService.db.transaction(async (tx) => {
       const [user] = await tx
@@ -60,6 +64,8 @@ export class AuthService {
           id: accountId,
           password: hashedPassword,
           userId: user.id,
+          verificationToken: token,
+          verificationOtp: otp,
           accessToken,
           refreshToken,
         })
@@ -115,7 +121,7 @@ export class AuthService {
       .leftJoin(UserTable, eq(AccountTable.userId, UserTable.id))
       .where(
         and(
-          eq(AccountTable.id, decoded.sub),
+          eq(AccountTable.userId, decoded.sub),
           eq(AccountTable.refreshToken, token),
         ),
       );
@@ -135,6 +141,124 @@ export class AuthService {
     return {
       accessToken,
       refreshToken,
+    };
+  }
+
+  async verifyByOtp(id: string, otp: string) {
+    try {
+      await this.databaseService.db
+        .update(AccountTable)
+        .set({
+          verificationOtp: null,
+          verificationToken: null,
+        })
+        .where(
+          and(
+            eq(AccountTable.id, id),
+            eq(AccountTable.verificationOtp, otp),
+            gt(AccountTable.verificationExpires, new Date()),
+          ),
+        );
+
+      return {
+        message: 'otp verified',
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async verifyByToken(id: string, token: string) {
+    try {
+      await this.databaseService.db
+        .update(AccountTable)
+        .set({
+          verificationOtp: null,
+          verificationToken: null,
+        })
+        .where(
+          and(
+            eq(AccountTable.id, id),
+            eq(AccountTable.verificationToken, token),
+            gt(AccountTable.verificationExpires, new Date()),
+          ),
+        );
+
+      return {
+        message: 'otp verified',
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async forgotPassword(email: string) {
+    const { account, user } = await this.findByEmail(email);
+
+    if (!account || !user) throw new NotFoundException('Invalid email');
+
+    await this.databaseService.db
+      .update(AccountTable)
+      .set({
+        passwordResetOtp: generateOtp(),
+        passwordResetToken: generateToken(),
+      })
+      .where(eq(AccountTable.id, account.id));
+
+    return {
+      message: 'Reset otp and link sent your email',
+    };
+  }
+
+  async checkResetOtp(email: string, otp: string) {
+    const { user, account } = await this.findByEmail(email);
+
+    if (!account || !user) throw new NotFoundException('Invalid email');
+    if (account.passwordResetOtp !== otp)
+      throw new BadRequestException('Invalid otp');
+
+    const update = await this.databaseService.db
+      .update(AccountTable)
+      .set({
+        passwordResetOtp: null,
+      })
+      .where(eq(AccountTable.id, account.id))
+      .returning();
+
+    if (update) {
+      throw new BadRequestException('Server sid error');
+    }
+
+    return {
+      message: 'success',
+      token: account.passwordResetToken,
+    };
+  }
+
+  async resetByToken(token: string, password: string) {
+    const [account] = await this.databaseService.db
+      .select()
+      .from(AccountTable)
+      .where(eq(AccountTable.passwordResetToken, token));
+    if (!account) throw new NotFoundException('Unauthorized user');
+
+    const hashedPassword = await hash(password);
+
+    await this.databaseService.db
+      .update(AccountTable)
+      .set({
+        password: hashedPassword,
+        passwordResetToken: null,
+      })
+      .where(
+        and(
+          eq(AccountTable.passwordResetToken, token),
+          eq(AccountTable.id, account.id),
+        ),
+      );
+
+    return {
+      message: 'Password reset successfully',
     };
   }
 

@@ -1,4 +1,10 @@
-import { pgTable, text, varchar } from 'drizzle-orm/pg-core';
+import {
+  boolean,
+  pgTable,
+  text,
+  timestamp,
+  varchar,
+} from 'drizzle-orm/pg-core';
 import { createId } from '@paralleldrive/cuid2';
 import { relations } from 'drizzle-orm';
 import { UserTable } from '../../user/schema/user.schema';
@@ -8,13 +14,20 @@ export const AccountTable = pgTable('account', {
     .primaryKey()
     .$defaultFn(() => createId()),
   password: varchar({ length: 255 }),
-  otp: varchar({ length: 255 }),
   accessToken: text(),
   refreshToken: text(),
-  verificationToken: varchar('verification_token', { length: 255 }),
-  passwordResetToken: varchar('password_reset_token', { length: 255 }),
+  verificationOtp: varchar({ length: 6 }),
+  verificationToken: varchar('verification_token', { length: 64 }),
+  verificationExpires: timestamp('verification_expires'),
+
+  passwordResetOtp: varchar({ length: 6 }),
+  passwordResetToken: varchar('password_reset_token', { length: 64 }),
+  passwordResetExpires: timestamp('password_reset_expires'),
+
   googleProvider: varchar({ length: 255 }),
   facebookProvider: varchar({ length: 255 }),
+
+  isVerified: boolean(),
 
   userId: varchar({ length: 255 })
     .references(() => UserTable.id, {

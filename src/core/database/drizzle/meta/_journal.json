@@ -22,6 +22,34 @@
       "when": 1762678067444,
       "tag": "0002_ambitious_taskmaster",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1762747305480,
+      "tag": "0003_abandoned_jack_power",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1762768829203,
+      "tag": "0004_grey_vindicator",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1762770519677,
+      "tag": "0005_abandoned_leader",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1762771484106,
+      "tag": "0006_demonic_pestilence",
+      "breakpoints": true
     }
   ]
 }

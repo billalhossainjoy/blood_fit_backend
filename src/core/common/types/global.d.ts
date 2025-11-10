@@ -4,7 +4,7 @@ import { Account } from '../../../modules/auth/schema/account.schema';
 
 declare module 'express' {
   interface Request {
-    user: User;
-    account: Account;
+    user?: User;
+    account?: Account;
   }
 }

@@ -8,11 +8,13 @@ import {
 } from 'class-validator';
 
 export class ForgottenOtpRequestDto {
-  @ApiProperty()
+  @ApiProperty({
+    example: '123456',
+  })
   @IsNotEmpty()
   @IsNumberString()
   @Length(6, 6)
-  otp: number;
+  otp: string;
 
   @ApiProperty()
   @IsNotEmpty()

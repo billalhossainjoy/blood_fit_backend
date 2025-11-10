@@ -17,6 +17,11 @@ import { AllowAnonymous } from './decorators/allow-anonymous.decorator';
 import { ActiveAccount } from './decorators/active-email.decorator';
 import { type Account } from './schema/account.schema';
 import { Roles } from './decorators/role.decorator';
+import {
+  OtpVerificationRequestDto,
+  TokenVerificationRequestDto,
+} from './dto/verification.dto';
+import { ForgottenOtpRequestDto, ResetPasswordDto } from './dto/forgotten.dto';
 
 @Controller('auth')
 @ApiBearerAuth('jwt')
@@ -85,7 +90,12 @@ export class AuthController {
   }
 
   @Post('otp-verification')
-  sendVerification(@Body() body: EmailDto) {}
+  verificationByOtp(
+    @Body() { otp }: OtpVerificationRequestDto,
+    @ActiveAccount('id') id: string,
+  ) {
+    return this.authService.verifyByOtp(id, otp);
+  }
 
   @Post('token-verification')
   @ApiBody({
@@ -98,14 +108,29 @@ export class AuthController {
       },
     },
   })
-  verifyEmail(@Body('token') token: string) {}
+  verificationByToken(
+    @Body() { token }: TokenVerificationRequestDto,
+    @ActiveAccount('id') id: string,
+  ) {
+    return this.authService.verifyByToken(id, token);
+  }
 
   @Post('forgot-password')
-  @Roles('USER')
-  forgotPassword(@Body() body: EmailDto) {
-    return { message: 'Password reset link sent to your email' };
+  @AllowAnonymous()
+  forgotPassword(@Body() { email }: EmailDto) {
+    return this.authService.forgotPassword(email);
+  }
+
+  @Post('otp-reset-password')
+  @AllowAnonymous()
+  resetByOTP(@Body() { otp, email }: ForgottenOtpRequestDto) {
+    return this.authService.checkResetOtp(email, otp);
   }
 
   @Post('reset-password')
-  resetPassword() {}
+  @Roles('USER')
+  @AllowAnonymous()
+  resetByToken(@Body() { token, password }: ResetPasswordDto) {
+    return this.authService.resetByToken(token, password);
+  }
 }
