@@ -1,29 +1,54 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSubscriptionFeatureDto } from './dto/create-subscription-feature.dto';
 import { UpdateSubscriptionFeatureDto } from './dto/update-subscription-feature.dto';
+import { DatabaseService } from '../../../../core/database/database.service';
+import { SubscriptionFeatureTable } from './schema/subscription-feature.schema';
+import { eq } from 'drizzle-orm';
 
 @Injectable()
 export class SubscriptionFeaturesService {
-  create(createSubscriptionFeatureDto: CreateSubscriptionFeatureDto) {
-    return 'This action adds a new subscriptionFeature';
+  constructor(private readonly databaseService: DatabaseService) {}
+
+  async create(createSubscriptionFeatureDto: CreateSubscriptionFeatureDto) {
+    const [user] = await this.databaseService.db
+      .insert(SubscriptionFeatureTable)
+      .values(createSubscriptionFeatureDto)
+      .returning();
+    return user;
   }
 
-  findAll() {
-    return `This action returns all subscriptionFeatures`;
+  async findAll() {
+    return this.databaseService.db.select().from(SubscriptionFeatureTable);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} subscriptionFeature`;
+  async findOne(id: string) {
+    const [coupon] = await this.databaseService.db
+      .select()
+      .from(SubscriptionFeatureTable)
+      .where(eq(SubscriptionFeatureTable.id, id));
+
+    return coupon;
   }
 
-  update(
-    id: number,
+  async update(
+    id: string,
     updateSubscriptionFeatureDto: UpdateSubscriptionFeatureDto,
   ) {
-    return `This action updates a #${id} subscriptionFeature`;
+    const [user] = await this.databaseService.db
+      .update(SubscriptionFeatureTable)
+      .set(updateSubscriptionFeatureDto)
+      .where(eq(SubscriptionFeatureTable.id, id))
+      .returning();
+
+    return user;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} subscriptionFeature`;
+  async remove(id: string) {
+    const [user] = await this.databaseService.db
+      .delete(SubscriptionFeatureTable)
+      .where(eq(SubscriptionFeatureTable.id, id))
+      .returning();
+
+    return user;
   }
 }

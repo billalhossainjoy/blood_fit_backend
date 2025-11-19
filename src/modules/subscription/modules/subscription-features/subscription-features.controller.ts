@@ -10,8 +10,10 @@ import {
 import { SubscriptionFeaturesService } from './subscription-features.service';
 import { CreateSubscriptionFeatureDto } from './dto/create-subscription-feature.dto';
 import { UpdateSubscriptionFeatureDto } from './dto/update-subscription-feature.dto';
+import { AllowAnonymous } from '../../../auth/decorators/allow-anonymous.decorator';
 
 @Controller('subscription-features')
+
 export class SubscriptionFeaturesController {
   constructor(
     private readonly subscriptionFeaturesService: SubscriptionFeaturesService,
@@ -31,7 +33,7 @@ export class SubscriptionFeaturesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.subscriptionFeaturesService.findOne(+id);
+    return this.subscriptionFeaturesService.findOne(id);
   }
 
   @Patch(':id')
@@ -40,13 +42,13 @@ export class SubscriptionFeaturesController {
     @Body() updateSubscriptionFeatureDto: UpdateSubscriptionFeatureDto,
   ) {
     return this.subscriptionFeaturesService.update(
-      +id,
+      id,
       updateSubscriptionFeatureDto,
     );
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.subscriptionFeaturesService.remove(+id);
+    return this.subscriptionFeaturesService.remove(id);
   }
 }

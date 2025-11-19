@@ -17,7 +17,7 @@ export const BillingCycleEnum = pgEnum('billing_cycle_enum', [
   'YEARLY',
 ]);
 
-export const SubscriptionPlan = pgTable('subscription_plan', {
+export const SubscriptionPlanTable = pgTable('subscription_plan', {
   id: varchar({ length: 128 })
     .primaryKey()
     .$defaultFn(() => createId()),
@@ -31,7 +31,7 @@ export const SubscriptionPlan = pgTable('subscription_plan', {
 });
 
 export const SubscriptionPlanRelation = relations(
-  SubscriptionPlan,
+  SubscriptionPlanTable,
   ({ many }) => ({
     features: many(PlanFeatures),
   }),
@@ -42,7 +42,7 @@ export const PlanFeatures = pgTable(
   {
     planId: varchar({ length: 128 })
       .notNull()
-      .references(() => SubscriptionPlan.id, {
+      .references(() => SubscriptionPlanTable.id, {
         onDelete: 'cascade',
       }),
     featureId: varchar({ length: 128 })
