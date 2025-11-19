@@ -3,6 +3,7 @@ import { createTransport, SentMessageInfo, Transporter } from 'nodemailer';
 import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import ejs from 'ejs';
+import { existsSync } from 'fs';
 
 @Injectable()
 export class MailService {
@@ -26,13 +27,7 @@ export class MailService {
     templateName: string,
     context: ejs.Data = {},
   ): Promise<SentMessageInfo> {
-    const templatePath = join(
-      process.cwd(),
-      'src',
-      'mail',
-      'templates',
-      `${templateName}.ejs`,
-    );
+    const templatePath = this.getTemplatePath(templateName);
 
     const html: string = await ejs.renderFile(templatePath, context);
 
@@ -43,5 +38,33 @@ export class MailService {
       text,
       html,
     });
+  }
+
+  private getTemplatePath(templateName: string): string {
+    // For production (dist folder)
+    const prodPath = join(
+      process.cwd(),
+      'dist',
+      'src',
+      'modules',
+      'mail',
+      'templates',
+      `${templateName}.ejs`,
+    );
+
+    console.log(prodPath);
+
+    // For development (src folder)
+    const devPath = join(
+      process.cwd(),
+      'src',
+      'modules',
+      'mail',
+      'templates',
+      `${templateName}.ejs`,
+    );
+
+    // Check which path exists
+    return existsSync(prodPath) ? prodPath : devPath;
   }
 }

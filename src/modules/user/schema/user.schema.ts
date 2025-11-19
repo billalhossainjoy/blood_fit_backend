@@ -1,4 +1,4 @@
-import { pgEnum, pgTable, varchar } from 'drizzle-orm/pg-core';
+import { pgEnum, pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { createId } from '@paralleldrive/cuid2';
 import { InferEnum, InferSelectModel, relations } from 'drizzle-orm';
 import { AccountTable } from '../../auth/schema/account.schema';
@@ -14,6 +14,8 @@ export const UserTable = pgTable('user', {
   lastName: varchar('last_name', { length: 255 }),
   contactNumber: varchar('contact_number', { length: 255 }),
   role: UserRole().default('USER').notNull(),
+
+  ...timestamp,
 });
 
 export const UserRelation = relations(UserTable, ({ one }) => ({

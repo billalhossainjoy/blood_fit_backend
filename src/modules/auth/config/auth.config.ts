@@ -9,4 +9,5 @@ export default registerAs('auth', () => ({
   ),
   issuer: process.env.ISSUER,
   audience: process.env.AUDIENCE,
+  REDIRECT_URL: process.env.REDIRECT_URL!,
 }));

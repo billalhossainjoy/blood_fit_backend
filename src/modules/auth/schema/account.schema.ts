@@ -27,13 +27,15 @@ export const AccountTable = pgTable('account', {
   googleProvider: varchar({ length: 255 }),
   facebookProvider: varchar({ length: 255 }),
 
-  isVerified: boolean(),
+  isVerified: boolean().default(false),
 
   userId: varchar({ length: 255 })
     .references(() => UserTable.id, {
       onDelete: 'cascade',
     })
     .notNull(),
+
+  ...timestamp,
 });
 
 export const AccountRelation = relations(AccountTable, ({ one }) => ({

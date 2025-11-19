@@ -9,6 +9,8 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
+import { AuthListener } from './listeners/auth.listener';
+import { MailService } from '../mail/mail.service';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { RoleGuard } from './guards/role.guard';
     UserService,
     DatabaseService,
     JwtService,
+    MailService,
+    AuthListener,
   ],
   controllers: [AuthController],
 })

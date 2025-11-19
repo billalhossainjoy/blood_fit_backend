@@ -1,15 +1,18 @@
 import {
   Body,
   Controller,
+  Get,
   Headers,
   HttpCode,
   HttpStatus,
+  Inject,
+  Param,
   Post,
   Res,
 } from '@nestjs/common';
 import { SignupRequestDto } from './dto/signup.dto';
 import { EmailDto } from '../../core/lib/dto/email.dto';
-import { ApiBearerAuth, ApiBody, ApiHeader } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { SignInRequestDto } from './dto/signin.dto';
 import type { Response } from 'express';
@@ -17,16 +20,21 @@ import { AllowAnonymous } from './decorators/allow-anonymous.decorator';
 import { ActiveAccount } from './decorators/active-email.decorator';
 import { type Account } from './schema/account.schema';
 import { Roles } from './decorators/role.decorator';
-import {
-  OtpVerificationRequestDto,
-  TokenVerificationRequestDto,
-} from './dto/verification.dto';
 import { ForgottenOtpRequestDto, ResetPasswordDto } from './dto/forgotten.dto';
+import authConfig from './config/auth.config';
+import type { ConfigType } from '@nestjs/config';
+import { UnVerified } from './decorators/unverified.decorator';
+import { ActiveUser } from './decorators/active-user.decorator';
+import { type User } from '../user/schema/user.schema';
 
 @Controller('auth')
 @ApiBearerAuth('jwt')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    @Inject(authConfig.KEY)
+    private readonly authConfiguration: ConfigType<typeof authConfig>,
+  ) {}
 
   @AllowAnonymous()
   @Post('signup')
@@ -89,30 +97,29 @@ export class AuthController {
     res.json({ message: 'Token refreshed successfully' });
   }
 
-  @Post('otp-verification')
-  verificationByOtp(
-    @Body() { otp }: OtpVerificationRequestDto,
-    @ActiveAccount('id') id: string,
-  ) {
-    return this.authService.verifyByOtp(id, otp);
+  @Get('verify/resend')
+  @UnVerified()
+  resendOtp(@ActiveAccount() account: Account) {
+    return this.authService.resendVerifyOtp(account);
   }
 
-  @Post('token-verification')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        token: {
-          type: 'string',
-        },
-      },
-    },
-  })
-  verificationByToken(
-    @Body() { token }: TokenVerificationRequestDto,
-    @ActiveAccount('id') id: string,
+  @Get('verify/otp/:otp')
+  verificationByOtp(
+    @Param('otp') otp: string,
+    @ActiveAccount() account: Account,
   ) {
-    return this.authService.verifyByToken(id, token);
+    return this.authService.verifyByOtp(account, otp);
+  }
+
+  @Get('verify/token/:token')
+  @AllowAnonymous()
+  async verificationByToken(
+    @Param('token') token: string,
+    @Res() res: Response,
+  ) {
+    await this.authService.verifyByToken(token);
+
+    return res.redirect('/');
   }
 
   @Post('forgot-password')
@@ -121,7 +128,7 @@ export class AuthController {
     return this.authService.forgotPassword(email);
   }
 
-  @Post('otp-reset-password')
+  @Post('reset-password-otp')
   @AllowAnonymous()
   resetByOTP(@Body() { otp, email }: ForgottenOtpRequestDto) {
     return this.authService.checkResetOtp(email, otp);
@@ -132,5 +139,10 @@ export class AuthController {
   @AllowAnonymous()
   resetByToken(@Body() { token, password }: ResetPasswordDto) {
     return this.authService.resetByToken(token, password);
+  }
+
+  @Get('profile')
+  getProfile(@ActiveUser() user: User) {
+    return user;
   }
 }

@@ -15,6 +15,7 @@ import { AccountTable } from '../schema/account.schema';
 import { eq } from 'drizzle-orm';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from '../decorators/allow-anonymous.decorator';
+import { IS_VERIFIED } from '../decorators/unverified.decorator';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -40,9 +41,7 @@ export class AuthGuard implements CanActivate {
 
     const token = request.headers.authorization?.split(' ')[1];
 
-    if (!token) {
-      throw new UnauthorizedException('Unauthorized.');
-    }
+    if (!token) throw new UnauthorizedException('Unauthorized.');
 
     let validateUser: { sub: string };
 
@@ -54,9 +53,8 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException('Unauthorized.');
     }
 
-    if (!validateUser || !validateUser.sub) {
+    if (!validateUser || !validateUser.sub)
       throw new UnauthorizedException('Unauthorized.');
-    }
 
     const [result] = await this.databaseService.db
       .select()
@@ -64,16 +62,24 @@ export class AuthGuard implements CanActivate {
       .where(eq(UserTable.id, validateUser.sub))
       .leftJoin(AccountTable, eq(AccountTable.userId, UserTable.id));
 
-    if (!result.user || !result.account) {
+    if (!result.user || !result.account)
       throw new UnauthorizedException('Unauthorized.');
-    }
 
-    if (!result.account.accessToken || result.account.accessToken !== token) {
+    if (!result.account.accessToken || result.account.accessToken !== token)
       throw new UnauthorizedException('Unauthorized.');
-    }
 
     request.user = result.user;
     request.account = result.account;
+
+    const isUnVerified = this.reflector.getAllAndOverride<boolean>(
+      IS_VERIFIED,
+      [context.getHandler(), context.getClass()],
+    );
+
+    if (isUnVerified) return true;
+
+    if (!result.account.isVerified)
+      throw new UnauthorizedException('User not verified');
 
     return true;
   }

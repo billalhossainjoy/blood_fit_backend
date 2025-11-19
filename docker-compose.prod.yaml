@@ -35,6 +35,9 @@ services:
   cloudflared:
     image: cloudflare/cloudflared  # https://blood-api.billal.space/
     command: tunnel --no-autoupdate run
+    depends_on:
+      - api
+      - db
     environment:
       - TUNNEL_TOKEN=${CLOUDFLARE_TOKEN}
     networks:

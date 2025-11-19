@@ -3,117 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account Verification Required</title>
-    <!-- Critical for email client compatibility: Use a small <style> block for media queries -->
-    <style>
-        @media only screen and (max-width: 600px) {
-            .container {
-                width: 100% !important;
-            }
-            .content-area {
-                padding: 20px !important;
-            }
-            .button {
-                display: block !important;
-                width: 100% !important;
-            }
-        }
-    </style>
+    <title>Verify Your Account</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #f4f4f4; font-family: Arial, sans-serif; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;">
-
-<!-- Outer table for background and centering -->
-<table border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;">
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f4f4f4;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px 0;">
     <tr>
-        <td align="center" style="padding: 30px 0;">
+        <td align="center">
+            <!-- Main Container -->
+            <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
 
-            <!-- Main Content Container (600px wide) -->
-            <table border="0" cellpadding="0" cellspacing="0" width="600" class="container" style="background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow: hidden;">
-
-                <!-- Header Section -->
+                <!-- Header -->
                 <tr>
-                    <td align="center" style="padding: 20px 0; background-color: #10b981; border-top-left-radius: 12px; border-top-right-radius: 12px;">
-                        <h1 style="margin: 0; font-size: 24px; color: #ffffff;">Blood-Fit</h1>
-                        <!-- You could replace this with an image logo -->
+                    <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;">
+                        <h1 style="margin: 0 0 10px 0; font-size: 28px; font-weight: 700; color: #ffffff;">🔐 Verify Your Account</h1>
+                        <p style="margin: 0; font-size: 16px; color: #ffffff;">Complete your verification to get started</p>
                     </td>
                 </tr>
 
-                <!-- Body Content -->
+                <!-- Content -->
                 <tr>
-                    <td class="content-area" style="padding: 40px; color: #333333;">
+                    <td style="padding: 40px 30px;">
 
-                        <h2 style="font-size: 24px; color: #1f2937; margin-top: 0; margin-bottom: 20px;">Welcome to the Family!</h2>
+                        <!-- Greeting -->
+                        <p style="margin: 0 0 20px 0; font-size: 18px; color: #333333;">Hello, <%= name %>!</p>
 
-                        <p style="margin-bottom: 20px; font-size: 16px; line-height: 1.6;">
-                            Hello **<%= name %>**,
+                        <!-- Message -->
+                        <p style="margin: 0 0 30px 0; font-size: 16px; color: #666666; line-height: 1.6;">
+                            Thank you for signing up! To complete your registration and secure your account, please verify your email address using the code or button below.
                         </p>
 
-                        <p style="margin-bottom: 25px; font-size: 16px; line-height: 1.6;">
-                            Thank you for registering! We just need to quickly verify your email address to secure your account and grant you full access to all our features.
-                        </p>
-
-                        <!-- Key Call to Action (CTA) Section -->
-                        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin: 30px 0;">
+                        <!-- OTP Section -->
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f7fa; border-radius: 8px; margin-bottom: 30px;">
                             <tr>
-                                <td align="center" style="padding: 10px;">
-
-                                    <!-- Verification Button -->
-                                    <table border="0" cellpadding="0" cellspacing="0">
-                                        <tr>
-                                            <td align="center" style="border-radius: 8px; background-color: #059669; padding: 12px 25px;">
-                                                <a href="<%= url %>" target="_blank" class="button"
-                                                   style="font-size: 18px; font-weight: bold; color: #ffffff; text-decoration: none; display: inline-block;">
-                                                    Verify My Account
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </table>
-
+                                <td style="padding: 30px; text-align: center;">
+                                    <p style="margin: 0 0 15px 0; font-size: 12px; color: #666666; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Your Verification Code</p>
+                                    <p style="margin: 0 0 10px 0; font-size: 36px; font-weight: 700; color: #667eea; letter-spacing: 8px; font-family: 'Courier New', monospace;"><%= otp %></p>
+                                    <p style="margin: 0; font-size: 13px; color: #999999;">Select and copy this code</p>
                                 </td>
                             </tr>
                         </table>
 
-                        <p style="margin-top: 25px; margin-bottom: 20px; font-size: 16px; line-height: 1.6; text-align: center; color: #6b7280;">
-                            This link will expire in 24 hours.
-                        </p>
+                        <!-- Divider -->
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
+                            <tr>
+                                <td style="border-bottom: 1px solid #dddddd; width: 45%;"></td>
+                                <td style="padding: 0 15px; text-align: center; font-size: 14px; color: #999999; font-weight: 600; width: 10%;">OR</td>
+                                <td style="border-bottom: 1px solid #dddddd; width: 45%;"></td>
+                            </tr>
+                        </table>
 
-                        <p style="margin-bottom: 20px; font-size: 16px; line-height: 1.6;">
-                            If the button above doesn't work, you can copy and paste the following link into your web browser:
-                        </p>
+                        <!-- Verify Button -->
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td align="center" style="padding: 0;">
+                                    <a href="<%= url %>" style="display: inline-block; width: 100%; max-width: 540px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; padding: 16px; border-radius: 8px; font-size: 16px; font-weight: 600; text-align: center;">✓ Verify Email Address</a>
+                                </td>
+                            </tr>
+                        </table>
 
-                        <!-- Verification Link Fallback -->
-                        <p style="word-break: break-all; font-size: 14px; color: #3b82f6; background-color: #eff6ff; padding: 10px; border-radius: 4px;">
-                            <%= url %>
-                        </p>
+                        <!-- Expiry Note -->
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top: 30px;">
+                            <tr>
+                                <td style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; border-radius: 4px;">
+                                    <p style="margin: 0; font-size: 14px; color: #856404;">⏰ <strong>Important:</strong> This verification code will expire in 5 minutes for security reasons.</p>
+                                </td>
+                            </tr>
+                        </table>
 
-                        <p style="margin-top: 30px; font-size: 16px; line-height: 1.6;">
-                            See you inside!
-                        </p>
-                        <p style="margin: 0; font-size: 16px; line-height: 1.6;">
-                            The **[Your App Name]** Team
+                        <!-- Security Note -->
+                        <p style="margin: 20px 0 0 0; font-size: 12px; color: #999999;">
+                            If you didn't request this verification, please ignore this email or contact our support team.
                         </p>
 
                     </td>
                 </tr>
 
-                <!-- Footer Section -->
+                <!-- Footer -->
                 <tr>
-                    <td align="center" style="padding: 30px 40px; background-color: #e5e7eb; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">
-                        <p style="margin: 0; font-size: 12px; color: #6b7280; line-height: 1.5;">
-                            You are receiving this email because you recently signed up for an account. If you did not sign up, please ignore this email.
-                        </p>
-                        <!-- Optional: Use EJS to dynamically insert the current year -->
-                        <p style="margin: 15px 0 0 0; font-size: 10px; color: #9ca3af;">
-                            &copy; <%= new Date().getFullYear() %> Blood-Fit. All rights reserved.
-                        </p>
+                    <td style="background-color: #f8f9fa; padding: 30px; text-align: center;">
+                        <p style="margin: 0 0 10px 0; font-size: 14px; color: #666666; font-weight: 600;">Need Help?</p>
+                        <p style="margin: 0 0 20px 0; font-size: 14px; color: #666666;">Contact us at <a href="mailto:support@example.com" style="color: #667eea; text-decoration: none;">support@example.com</a></p>
+                        <p style="margin: 0; font-size: 14px; color: #999999;">© 2024 Your Company. All rights reserved.</p>
                     </td>
                 </tr>
 
             </table>
-
         </td>
     </tr>
 </table>
-
 </body>
 </html>

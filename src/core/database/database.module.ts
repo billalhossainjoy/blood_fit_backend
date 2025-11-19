@@ -35,6 +35,6 @@ import { DATABASE_PROVIDER } from './database.constrants';
     },
     DatabaseService,
   ],
-  exports: [DATABASE_PROVIDER, DATABASE_PROVIDER],
+  exports: [DATABASE_PROVIDER, DATABASE_PROVIDER, DatabaseService],
 })
 export class DatabaseModule {}

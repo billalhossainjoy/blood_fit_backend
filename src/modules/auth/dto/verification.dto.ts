@@ -3,17 +3,19 @@ import { IsNotEmpty, IsNumberString, IsString, Length } from 'class-validator';
 
 export class OtpVerificationRequestDto {
   @ApiProperty({
-    example: '123456',
+    example: 'http://localhost:3000',
   })
   @IsNotEmpty()
   @IsNumberString()
   @Length(6, 6)
-  otp: string;
+  redirectUrl: string;
 }
 
 export class TokenVerificationRequestDto {
-  @ApiProperty()
+  @ApiProperty({
+    example: 'http://localhost:3000',
+  })
   @IsNotEmpty()
   @IsString()
-  token: string;
+  redirectUrl: string;
 }
