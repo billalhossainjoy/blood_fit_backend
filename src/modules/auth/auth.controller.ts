@@ -8,14 +8,16 @@ import {
   Inject,
   Param,
   Post,
+  Req,
   Res,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { SignupRequestDto } from './dto/signup.dto';
 import { EmailDto } from '../../core/lib/dto/email.dto';
 import { ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { SignInRequestDto } from './dto/signin.dto';
-import type { Response } from 'express';
+import type { CookieOptions, Request, Response } from 'express';
 import { AllowAnonymous } from './decorators/allow-anonymous.decorator';
 import { ActiveAccount } from './decorators/active-email.decorator';
 import { type Account } from './schema/account.schema';
@@ -24,16 +26,20 @@ import { ForgottenOtpRequestDto, ResetPasswordDto } from './dto/forgotten.dto';
 import authConfig from './config/auth.config';
 import type { ConfigType } from '@nestjs/config';
 import { UnVerified } from './decorators/unverified.decorator';
-import { ActiveUser } from './decorators/active-user.decorator';
-import { type User } from '../user/schema/user.schema';
+import appConfig from '../../core/config/app.config';
+import { NODE_ENV } from '../../core/config/config.schema';
 
 @Controller('auth')
 @ApiBearerAuth('jwt')
 export class AuthController {
+  private readonly RefreshTokenCookieOption: CookieOptions = {};
+
   constructor(
     private readonly authService: AuthService,
     @Inject(authConfig.KEY)
     private readonly authConfiguration: ConfigType<typeof authConfig>,
+    @Inject(appConfig.KEY)
+    private readonly appConfiguration: ConfigType<typeof appConfig>,
   ) {}
 
   @AllowAnonymous()
@@ -47,6 +53,9 @@ export class AuthController {
 
     res.setHeader('access-token', accessToken);
     res.setHeader('refresh-token', refreshToken);
+
+    res.cookie('access-token', accessToken, this.accessTokenCookieOption());
+    res.cookie('refresh-token', refreshToken, this.refreshTokenCookieOption());
 
     res.json({
       message: 'User created successfully',
@@ -67,6 +76,9 @@ export class AuthController {
     res.setHeader('access-token', accessToken);
     res.setHeader('refresh-token', refreshToken);
 
+    res.cookie('access-token', accessToken, this.accessTokenCookieOption());
+    res.cookie('refresh-token', refreshToken, this.refreshTokenCookieOption());
+
     res.json({
       message: 'User logged in successfully',
       user,
@@ -74,26 +86,41 @@ export class AuthController {
   }
 
   @Post('logout')
-  logout(@ActiveAccount() account: Account) {
-    return this.authService.logout(account);
+  async logout(@ActiveAccount() account: Account, @Res() res: Response) {
+    res.clearCookie('access-token');
+    res.clearCookie('refresh-token');
+
+    await this.authService.logout(account);
+
+    res.json({
+      message: 'User logged out successfully',
+    });
   }
 
   @AllowAnonymous()
-  @Post('refresh-token')
+  @Get('refresh-token')
   @ApiHeader({
     name: 'refresh-token',
     description: 'Refresh token',
-    required: true,
   })
   async refreshToken(
-    @Headers('refresh-token') token: string,
+    @Headers('refresh-token') currentRefreshToken: string | undefined,
     @Res() res: Response,
+    @Req() req: Request,
   ) {
+    const token =
+      currentRefreshToken ?? (req.cookies['refresh-token'] as string);
+
+    if (!token) throw new UnauthorizedException('Unauthorized.');
     const { refreshToken, accessToken } =
       await this.authService.refreshToken(token);
 
     res.setHeader('access-token', accessToken);
     res.setHeader('refresh-token', refreshToken);
+
+    res.cookie('access-token', accessToken, this.accessTokenCookieOption());
+    res.cookie('refresh-token', refreshToken, this.refreshTokenCookieOption());
+
     res.json({ message: 'Token refreshed successfully' });
   }
 
@@ -104,6 +131,7 @@ export class AuthController {
   }
 
   @Get('verify/otp/:otp')
+  @UnVerified()
   verificationByOtp(
     @Param('otp') otp: string,
     @ActiveAccount() account: Account,
@@ -141,8 +169,19 @@ export class AuthController {
     return this.authService.resetByToken(token, password);
   }
 
-  @Get('profile')
-  getProfile(@ActiveUser() user: User) {
-    return user;
+  private accessTokenCookieOption(): CookieOptions {
+    return {
+      httpOnly: this.appConfiguration.NODE_ENV === NODE_ENV.production,
+      secure: true,
+      path: '/',
+    };
+  }
+
+  private refreshTokenCookieOption(): CookieOptions {
+    return {
+      httpOnly: this.appConfiguration.NODE_ENV === NODE_ENV.production,
+      secure: true,
+      path: '/api/auth/refresh-token',
+    };
   }
 }

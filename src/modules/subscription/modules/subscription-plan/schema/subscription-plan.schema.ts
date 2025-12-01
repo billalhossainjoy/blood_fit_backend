@@ -9,7 +9,7 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core';
 import { createId } from '@paralleldrive/cuid2';
-import { relations } from 'drizzle-orm';
+import { InferEnum, InferInsertModel, relations } from 'drizzle-orm';
 import { SubscriptionFeatureTable } from '../../subscription-features/schema/subscription-feature.schema';
 
 export const BillingCycleEnum = pgEnum('billing_cycle_enum', [
@@ -17,11 +17,21 @@ export const BillingCycleEnum = pgEnum('billing_cycle_enum', [
   'YEARLY',
 ]);
 
+export type BillingCycleEnumType = InferEnum<typeof BillingCycleEnum>;
+
+export const SubscriptionEnum = pgEnum('subscription_type_enum', [
+  'STARTER_PLAN',
+  'ELITE_PLAN',
+  'PRO_PLAN',
+]);
+export type SubscriptionEnumType = InferEnum<typeof SubscriptionEnum>;
+
 export const SubscriptionPlanTable = pgTable('subscription_plan', {
   id: varchar({ length: 128 })
     .primaryKey()
     .$defaultFn(() => createId()),
   name: varchar({ length: 128 }).notNull(),
+  type: SubscriptionEnum().notNull().unique(),
   discount: text(),
   price: integer().notNull(),
   currency: varchar({ length: 8 }).notNull(),
@@ -55,3 +65,7 @@ export const PlanFeatures = pgTable(
     pk: primaryKey({ columns: [table.planId, table.featureId] }),
   }),
 );
+
+export type SubscriptionPlanInsertType = InferInsertModel<
+  typeof SubscriptionPlanTable
+>;

@@ -10,10 +10,8 @@ import {
 import { SubscriptionFeaturesService } from './subscription-features.service';
 import { CreateSubscriptionFeatureDto } from './dto/create-subscription-feature.dto';
 import { UpdateSubscriptionFeatureDto } from './dto/update-subscription-feature.dto';
-import { AllowAnonymous } from '../../../auth/decorators/allow-anonymous.decorator';
 
 @Controller('subscription-features')
-
 export class SubscriptionFeaturesController {
   constructor(
     private readonly subscriptionFeaturesService: SubscriptionFeaturesService,

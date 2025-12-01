@@ -1,0 +1,1 @@
+ALTER TABLE "user" ALTER COLUMN "blood_type" DROP NOT NULL;

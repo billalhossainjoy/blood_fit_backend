@@ -10,11 +10,11 @@ export class SubscriptionFeaturesService {
   constructor(private readonly databaseService: DatabaseService) {}
 
   async create(createSubscriptionFeatureDto: CreateSubscriptionFeatureDto) {
-    const [user] = await this.databaseService.db
+    const [SubscriptionFeature] = await this.databaseService.db
       .insert(SubscriptionFeatureTable)
       .values(createSubscriptionFeatureDto)
       .returning();
-    return user;
+    return SubscriptionFeature;
   }
 
   async findAll() {
@@ -22,33 +22,33 @@ export class SubscriptionFeaturesService {
   }
 
   async findOne(id: string) {
-    const [coupon] = await this.databaseService.db
+    const [SubscriptionFeature] = await this.databaseService.db
       .select()
       .from(SubscriptionFeatureTable)
       .where(eq(SubscriptionFeatureTable.id, id));
 
-    return coupon;
+    return SubscriptionFeature;
   }
 
   async update(
     id: string,
     updateSubscriptionFeatureDto: UpdateSubscriptionFeatureDto,
   ) {
-    const [user] = await this.databaseService.db
+    const [SubscriptionFeature] = await this.databaseService.db
       .update(SubscriptionFeatureTable)
       .set(updateSubscriptionFeatureDto)
       .where(eq(SubscriptionFeatureTable.id, id))
       .returning();
 
-    return user;
+    return SubscriptionFeature;
   }
 
   async remove(id: string) {
-    const [user] = await this.databaseService.db
+    const [SubscriptionFeature] = await this.databaseService.db
       .delete(SubscriptionFeatureTable)
       .where(eq(SubscriptionFeatureTable.id, id))
       .returning();
 
-    return user;
+    return SubscriptionFeature;
   }
 }

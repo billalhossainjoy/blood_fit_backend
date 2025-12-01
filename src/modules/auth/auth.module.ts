@@ -11,10 +11,12 @@ import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
 import { AuthListener } from './listeners/auth.listener';
 import { MailService } from '../mail/mail.service';
+import appConfig from '../../core/config/app.config';
 
 @Module({
   imports: [
     ConfigModule.forFeature(authConfig),
+    ConfigModule.forFeature(appConfig),
     JwtModule.registerAsync(authConfig.asProvider()),
   ],
   providers: [

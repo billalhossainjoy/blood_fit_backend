@@ -10,11 +10,13 @@ import { SubscriptionModule } from './modules/subscription/subscription.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { APP_PIPE } from '@nestjs/core';
 import { ZodValidationPipe } from 'nestjs-zod';
+import { ProfileModule } from './modules/profile/profile.module';
 
 @Module({
   imports: [
     EventEmitterModule.forRoot(),
     AuthModule,
+    ProfileModule,
     UploadModule,
     MailModule,
     ConfigModule,

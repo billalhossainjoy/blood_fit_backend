@@ -79,7 +79,14 @@ export class AuthService {
         account,
       });
 
-      return { user, accessToken, refreshToken };
+      return {
+        user: {
+          ...user,
+          isVerified: account.isVerified,
+        },
+        accessToken,
+        refreshToken,
+      };
     });
   }
 
@@ -101,7 +108,14 @@ export class AuthService {
       })
       .where(eq(AccountTable.id, account.id));
 
-    return { user, accessToken, refreshToken };
+    return {
+      user: {
+        ...user,
+        isVerified: account.isVerified,
+      },
+      accessToken,
+      refreshToken,
+    };
   }
 
   async logout(account: Account) {
@@ -113,8 +127,6 @@ export class AuthService {
       })
       .where(eq(AccountTable.id, account.id))
       .returning();
-
-    return { message: 'User logged out successfully' };
   }
 
   async refreshToken(token: string) {

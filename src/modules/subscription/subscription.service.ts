@@ -1,26 +1,57 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 import { UpdateSubscriptionDto } from './dto/update-subscription.dto';
+import { DatabaseService } from '../../core/database/database.service';
+import { SubscriptionTable } from './schema/subscription.schema';
+import { eq } from 'drizzle-orm';
 
 @Injectable()
 export class SubscriptionService {
-  create(createSubscriptionDto: CreateSubscriptionDto) {
-    return 'This action adds a new subscription';
+  constructor(private readonly databaseService: DatabaseService) {}
+
+  async create(createSubscriptionDto: CreateSubscriptionDto) {
+    console.log(createSubscriptionDto);
+    const [subscription] = await this.databaseService.db
+      .insert(SubscriptionTable)
+      .values({
+        ...createSubscriptionDto,
+      })
+      .returning();
+
+    return subscription;
   }
 
   findAll() {
-    return `This action returns all subscription`;
+    return this.databaseService.db.select().from(SubscriptionTable);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} subscription`;
+  async findOne(id: string) {
+    const [subscription] = await this.databaseService.db
+      .select()
+      .from(SubscriptionTable)
+      .where(eq(SubscriptionTable.id, id));
+
+    return subscription;
   }
 
-  update(id: number, updateSubscriptionDto: UpdateSubscriptionDto) {
-    return `This action updates a #${id} subscription`;
+  async update(id: string, updateSubscriptionDto: UpdateSubscriptionDto) {
+    const [subscription] = await this.databaseService.db
+      .update(SubscriptionTable)
+      .set({
+        ...updateSubscriptionDto,
+      })
+      .where(eq(SubscriptionTable.id, id))
+      .returning();
+
+    return subscription;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} subscription`;
+  async remove(id: string) {
+    const [subscription] = await this.databaseService.db
+      .delete(SubscriptionTable)
+      .where(eq(SubscriptionTable.id, id))
+      .returning();
+
+    return subscription;
   }
 }

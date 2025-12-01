@@ -1,4 +1,4 @@
-import { pgTable, time, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { createId } from '@paralleldrive/cuid2';
 import { UserTable } from '../../user/schema/user.schema';
 import { SubscriptionFeatureTable } from '../modules/subscription-features/schema/subscription-feature.schema';
@@ -13,9 +13,11 @@ export const SubscriptionTable = pgTable('subscription', {
   planId: varchar({ length: 128 }).references(
     () => SubscriptionFeatureTable.id,
   ),
-  startDate: time().defaultNow().notNull(),
-  endDate: time().defaultNow().notNull(),
+  startDate: timestamp({ withTimezone: true }).defaultNow().notNull(),
+  endDate: timestamp({ withTimezone: true }).defaultNow().notNull(),
   billingCycle: BillingCycleEnum().notNull(),
 
   ...timestamps,
 });
+
+export type SubscriptionInsertType = typeof SubscriptionTable.$inferInsert;

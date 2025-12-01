@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule as GlobalConfigModule } from '@nestjs/config';
 import { ConfigValidateEnv } from './config.schema';
+import appConfig from './app.config';
 
 @Module({
   imports: [
@@ -8,7 +9,8 @@ import { ConfigValidateEnv } from './config.schema';
       isGlobal: true,
       validationSchema: ConfigValidateEnv,
     }),
+    GlobalConfigModule.forFeature(appConfig),
   ],
-  exports: [ConfigModule],
+  exports: [GlobalConfigModule],
 })
 export class ConfigModule {}
