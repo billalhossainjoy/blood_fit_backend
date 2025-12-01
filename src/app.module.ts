@@ -11,6 +11,8 @@ import { PaymentModule } from './modules/payment/payment.module';
 import { APP_PIPE } from '@nestjs/core';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { ProfileModule } from './modules/profile/profile.module';
+import { FitnessModule } from './modules/fitness/fitness.module';
+import { MealplanModule } from './modules/mealplan/mealplan.module';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { ProfileModule } from './modules/profile/profile.module';
     DatabaseModule,
     SubscriptionModule,
     PaymentModule,
+    FitnessModule,
+    MealplanModule,
   ],
   providers: [
     {
